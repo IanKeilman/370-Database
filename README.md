@@ -1,82 +1,79 @@
-This is the repository containing the SQL database for thermal images taken on Loyola's LS campus.
+#  Thermal Image SQL Database — Loyola LS Campus
 
-There are two tables, static and environment_logs. 
+This repository contains the SQLite database used to store thermal image data collected from windows on Loyola’s Lakeshore campus.
 
-static contains the static information of the windows.
+The database consists of two relational tables: `static` and `environment_logs`.
 
-  location_ID is the primary key for connecting the two tables. TEXT
-    Format: First letter in each word in building name lowercase / Floor Number (1 is first floor above basement, basement is 0) / Window position from the left (start at 0)
-    Example: "ch_1_2", Cuneo Hall, first floor, third window from the left.
+---
 
-  building_name is the building name. TEXT
-    Format: all lowercase with underscores for spaces
-    Example: "cuneo_hall"
+##  Table: `static`
 
-  floor_number is the floor where the window is located. INTEGER
-    Format: Basement is 0 and each row of windows will increase by 1
-    Example: "1", first floor
+This table stores **static information** about each window, such as its location in a building.
 
-  side_of_building is the side of the building the window is located. TEXT
-    Format: All lowercase, consult image guide for help with which side is which, cardinal directions.
-            # Need to make image guide as well as consider alternatives
-    Example: "north", North side of building
+### Columns:
 
+- **`location_id`** (TEXT)  
+  Primary key used to connect the `static` and `environment_logs` tables.  
+  - **Format**: First letter in each word in the building name (lowercase) / Floor number / Window position from the left  
+  - **Example**: `ch_1_2` → Cuneo Hall, first floor, third window from the left
 
+- **`building_name`** (TEXT)  
+  Name of the building in lowercase with underscores replacing spaces.  
+  - **Example**: `cuneo_hall`
 
-environment_logs contains the dynamic environmental readings associated with each window.
+- **`floor_number`** (INTEGER)  
+  The floor where the window is located.  
+  - **Format**: `0` for basement, `1` for first floor, and so on  
+  - **Example**: `1` (first floor)
 
-log_id is the unique identifier for each observation. INTEGER
-  Format: Auto-incremented integer assigned to each row automatically
-  Example: "12", the 12th entry in the logs
+- **`side_of_building`** (TEXT)  
+  Cardinal direction indicating which side of the building the window is on.  
+  - **Format**: All lowercase  
+  - **Example**: `north`
 
-location_id is the foreign key linking each log to a window in the static table. TEXT
-  Format: Must match an existing location_id in the static table
-  Example: "ch_1_2", refers to the same window described in static
+---
 
-outside_temp is the temperature outside at the time of the reading. REAL
-  Format: Decimal temperature in degrees Fahrenheit
-  Example: "45.2", 45.2°F outside
+##  Table: `environment_logs`
 
-min_temp is the minimum temperature recorded on the window. REAL
-  Format: Decimal temperature in degrees Fahrenheit
-  Example: "63.1", 63.1°F at coldest point on the window
+This table stores **dynamic environmental readings** linked to each window.
 
-max_temp is the maximum temperature recorded on the window. REAL
-  Format: Decimal temperature in degrees Fahrenheit
-  Example: "71.8", 71.8°F at warmest point on the window
+### Columns:
 
-time_taken_hours is the length of time (in hours) over which the reading was taken rounded down. INTEGER
-  Format: Whole number, 0-23 for a full day
-  Example: "3", data collected at 3:00 am - 3:59am. "23", data collected at 11:00 pm - 11:59 pm
+- **`log_id`** (INTEGER)  
+  Auto-incremented unique ID for each log entry.  
+  - **Example**: `12`
 
-windows_opened indicates whether the window was opened during the logging period. TEXT
-  Format: 'Y' for yes, 'N' for no
-    Example: "N", the window remained closed
+- **`location_id`** (TEXT)  
+  Foreign key referencing the `static` table.  
+  - **Example**: `ch_1_2` (same as in `static`)
 
-date is the date when the reading was taken. TEXT
-  Format: YYYY-MM-DD
-  Example: "2025-03-30", March 30, 2025
+- **`outside_temp`** (REAL)  
+  Outside temperature at the time of the reading in °F.  
+  - **Example**: `45.2`
 
-url is a link to the corresponding thermal image in a google drive. TEXT
-  Format: Valid URL string pointing to image or file location
-  Example: "https://example.com/images/ch_1_2_2025-03-30.jpg"
+- **`min_temp`** (REAL)  
+  Minimum temperature recorded on the window.  
+  - **Example**: `63.1`
 
+- **`max_temp`** (REAL)  
+  Maximum temperature recorded on the window.  
+  - **Example**: `71.8`
 
+- **`time_taken_hours`** (INTEGER)  
+  Hour of the day when the reading was taken (0–23).  
+  - **Example**: `3` → Data collected between 3:00 AM – 3:59 AM  
+  - **Example**: `23` → Data collected between 11:00 PM – 11:59 PM
 
+- **`windows_opened`** (TEXT)  
+  Indicates whether the window was opened during the logging period.  
+  - **Format**: `'Y'` for yes, `'N'` for no  
+  - **Example**: `N`
 
+- **`date`** (TEXT)  
+  Date when the reading was taken.  
+  - **Format**: `YYYY-MM-DD`  
+  - **Example**: `2025-03-30`
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-  
+- **`url`** (TEXT)  
+  Link to the corresponding thermal image in Google Drive.  
+  - **Example**: `https://example.com/images/ch_1_2_2025-03-30.jpg`
