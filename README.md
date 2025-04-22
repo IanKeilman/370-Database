@@ -77,3 +77,22 @@ This table stores **dynamic environmental readings** linked to each window.
 - **`url`** (TEXT)  
   Link to the corresponding thermal image in Google Drive.  
   - **Example**: `https://example.com/images/ch_1_2_2025-03-30.jpg`
+
+
+### Camera Setup Instructions
+
+**1. Crosshair Settings**  
+- Uncheck both boxes for **Rule**  
+  - This removes the red and blue crosshairs from the display.
+
+**2. Color Palette**  
+- Set palette to the color one without green  
+  - (Blue/Purple on the left to Yellow/White on the right)
+
+**3. Measurement Settings**  
+- **Distance**: 10m  
+- **Laser**: On  
+- **Unit**: Celsius
+
+**4. Branding**  
+- **Brand Logo**: Off
