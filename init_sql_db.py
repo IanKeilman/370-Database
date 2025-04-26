@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS environment_logs (
     time_taken_hours INTEGER,
     windows_opened TEXT CHECK(windows_opened IN ('Y', 'N')),
     date TEXT,
-    url TEXT,
+    url_original TEXT,
+    url_clean TEXT,
     FOREIGN KEY (location_id) REFERENCES static(location_id)
 )
 """)
