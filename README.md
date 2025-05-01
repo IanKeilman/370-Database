@@ -74,9 +74,13 @@ This table stores **dynamic environmental readings** linked to each window.
   - **Format**: `YYYY-MM-DD`  
   - **Example**: `2025-03-30`
 
-- **`url`** (TEXT)  
-  Link to the corresponding thermal image in Google Drive.  
-  - **Example**: `https://example.com/images/ch_1_2_2025-03-30.jpg`
+- **`url_original`** (TEXT)  
+  Link to the corresponding uncleaned thermal image in Google Drive.  
+  - **Example**: `https://example.com/images/ch_1_2.jpg`
+
+- **`url_original`** (TEXT)  
+  Link to the corresponding cleaned thermal image in Google Drive.  
+  - **Example**: `https://example.com/images/ch_1_2_clean.jpg`
 
 
 ### Camera Setup Instructions
