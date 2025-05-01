@@ -1,102 +1,89 @@
-#  Thermal Image SQL Database — Loyola LS Campus
+# Thermal Image SQL Database — Loyola LS Campus
 
 This repository contains the SQLite database used to store thermal image data collected from windows on Loyola’s Lakeshore campus.
 
-The database consists of two relational tables: `static` and `environment_logs`.
+## Overview
+
+The database consists of two tables:
+
+- **`static`** — stores static window metadata (location, building, floor, side).  
+- **`environment_logs`** — stores dynamic temperature readings and related information.
 
 ---
 
-##  Table: `static`
+## Table: `static`
 
-This table stores **static information** about each window, such as its location in a building.
+Stores static information about each window.
 
-### Columns:
+### Columns
 
-- **`location_id`** (TEXT)  
-  Primary key used to connect the `static` and `environment_logs` tables.  
-  - **Format**: First letter in each word in the building name (lowercase) / Floor number / Window position from the left  
-  - **Example**: `ch_1_2` → Cuneo Hall, first floor, third window from the left
-
-- **`building_name`** (TEXT)  
-  Name of the building in lowercase with underscores replacing spaces.  
-  - **Example**: `cuneo_hall`
-
-- **`floor_number`** (INTEGER)  
-  The floor where the window is located.  
-  - **Format**: `0` for basement, `1` for first floor, and so on  
-  - **Example**: `1` (first floor)
-
-- **`side_of_building`** (TEXT)  
-  Cardinal direction indicating which side of the building the window is on.  
-  - **Format**: All lowercase  
-  - **Example**: `north`
+| Column             | Type    | Description                                                            |
+|--------------------|---------|------------------------------------------------------------------------|
+| `location_id`      | TEXT    | Primary key (e.g., `ch_1_2` → Cuneo Hall, 1st floor, 3rd window).       |
+| `building_name`    | TEXT    | Building name in lowercase with underscores (e.g., `cuneo_hall`).       |
+| `floor_number`     | INTEGER | Floor number (`0` = basement, `1` = first floor, etc.).                |
+| `side_of_building` | TEXT    | Cardinal direction in lowercase (e.g., `north`).                       |
 
 ---
 
-##  Table: `environment_logs`
+## Table: `environment_logs`
 
-This table stores **dynamic environmental readings** linked to each window.
+Stores dynamic environmental readings linked to each window.
 
-### Columns:
+### Columns
 
-- **`log_id`** (INTEGER)  
-  Auto-incremented unique ID for each log entry.  
-  - **Example**: `12`
+| Column              | Type     | Description                                                                                  |
+|---------------------|----------|----------------------------------------------------------------------------------------------|
+| `log_id`            | INTEGER  | Auto-incremented unique ID for each log entry.                                               |
+| `location_id`       | TEXT     | Foreign key referencing `static.location_id`.                                                |
+| `outside_temp`      | REAL     | Outside temperature at the time of reading (°F).                                             |
+| `min_temp`          | REAL     | Minimum temperature recorded on the window.                                                  |
+| `max_temp`          | REAL     | Maximum temperature recorded on the window.                                                  |
+| `time_taken_hours`  | INTEGER  | Hour of the day (0–23) when the reading was taken.                                           |
+| `windows_opened`    | TEXT     | `'Y'` if the window was opened during logging; otherwise `'N'`.                              |
+| `date`              | TEXT     | Date of the reading (`YYYY-MM-DD`).                                                          |
+| `url_original`      | TEXT     | URL to the uncleaned thermal image in Google Drive.                                          |
+| `url_clean`         | TEXT     | URL to the cleaned thermal image in Google Drive.                                            |
 
-- **`location_id`** (TEXT)  
-  Foreign key referencing the `static` table.  
-  - **Example**: `ch_1_2` (same as in `static`)
+---
 
-- **`outside_temp`** (REAL)  
-  Outside temperature at the time of the reading in °F.  
-  - **Example**: `45.2`
+## Camera Setup Instructions
 
-- **`min_temp`** (REAL)  
-  Minimum temperature recorded on the window.  
-  - **Example**: `63.1`
+1. **Crosshair Settings**  
+   Uncheck both boxes for **Rule** to remove red and blue crosshairs.
 
-- **`max_temp`** (REAL)  
-  Maximum temperature recorded on the window.  
-  - **Example**: `71.8`
+2. **Color Palette**  
+   Select the palette without green (blue/purple on the left to yellow/white on the right).
 
-- **`time_taken_hours`** (INTEGER)  
-  Hour of the day when the reading was taken (0–23).  
-  - **Example**: `3` → Data collected between 3:00 AM – 3:59 AM  
-  - **Example**: `23` → Data collected between 11:00 PM – 11:59 PM
+3. **Measurement Settings**  
+   - **Distance**: 10 m  
+   - **Laser**: On  
+   - **Unit**: Celsius  
 
-- **`windows_opened`** (TEXT)  
-  Indicates whether the window was opened during the logging period.  
-  - **Format**: `'Y'` for yes, `'N'` for no  
-  - **Example**: `N`
+4. **Branding**  
+   Turn **Brand Logo** off.
 
-- **`date`** (TEXT)  
-  Date when the reading was taken.  
-  - **Format**: `YYYY-MM-DD`  
-  - **Example**: `2025-03-30`
+---
 
-- **`url_original`** (TEXT)  
-  Link to the corresponding uncleaned thermal image in Google Drive.  
-  - **Example**: `https://example.com/images/ch_1_2.jpg`
+## Uploading New Images
 
-- **`url_original`** (TEXT)  
-  Link to the corresponding cleaned thermal image in Google Drive.  
-  - **Example**: `https://example.com/images/ch_1_2_clean.jpg`
+1. **Upload to Google Drive**  
+   - Navigate to the folder for the respective building.  
+   - Upload raw images (no renaming necessary if you know the `location_id`).
 
+2. **Run `db_upload`**  
+   - Execute the script to clean images and log temperature data.  
+   - You will be prompted for `location_id`, `outside_temp`, `time_taken_hours`, and `windows_opened`.
 
-### Camera Setup Instructions
+---
 
-**1. Crosshair Settings**  
-- Uncheck both boxes for **Rule**  
-  - This removes the red and blue crosshairs from the display.
+## Requirements
 
-**2. Color Palette**  
-- Set palette to the color one without green  
-  - (Blue/Purple on the left to Yellow/White on the right)
+- **Python 3.x**  
+- Install dependencies:  
+  ```bash
+  pip install -r requirements.txt
 
-**3. Measurement Settings**  
-- **Distance**: 10m  
-- **Laser**: On  
-- **Unit**: Celsius
+-**Pytesseract**
+- Add Tesseract to your system path (run the provided .exe in this repository).
 
-**4. Branding**  
-- **Brand Logo**: Off
