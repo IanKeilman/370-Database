@@ -84,6 +84,6 @@ Stores dynamic environmental readings linked to each window.
   ```bash
   pip install -r requirements.txt
 
--**Pytesseract**
+- **Pytesseract**
 - Add Tesseract to your system path (run the provided .exe in this repository).
 
